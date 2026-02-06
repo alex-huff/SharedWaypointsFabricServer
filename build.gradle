@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '1.9-SNAPSHOT'
+	id 'fabric-loom' version "${loom_version}"
 	id 'maven-publish'
 }
 
@@ -17,7 +17,8 @@ repositories {
 	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
 	// for more information about repositories.
 	maven { url 'https://jitpack.io' }
-	maven { url = "https://repo.mikeprimm.com/" }
+	maven { url 'https://repo.mikeprimm.com' }
+	maven { url 'https://repo.bluecolored.de/releases' }
 }
 
 dependencies {
@@ -29,8 +30,8 @@ dependencies {
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-	implementation "com.github.BlueMap-Minecraft:BlueMapAPI:v2.5.1"
-	implementation "us.dynmap:DynmapCoreAPI:3.6-beta-1"
+	implementation 'de.bluecolored:bluemap-api:2.7.7'
+	implementation 'us.dynmap:DynmapCoreAPI:3.8'
 }
 
 processResources {
@@ -65,7 +66,7 @@ java {
 
 jar {
 	from("LICENSE") {
-		rename { "${it}_${project.archivesBaseName}"}
+		rename { "${it}_${base.archivesName}"}
 	}
 }
 

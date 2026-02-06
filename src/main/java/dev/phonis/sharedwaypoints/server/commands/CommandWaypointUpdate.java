@@ -42,7 +42,7 @@ public class CommandWaypointUpdate extends OptionalPairServerCommand<String, Pos
         throws CommandException, CommandSyntaxException
     {
         this.onOptionalCommand(source, s, posArgument.getPos(source.getSource()), source.getSource().getPlayer()
-            .getServerWorld());
+            .getEntityWorld());
     }
 
     @Override
@@ -51,7 +51,7 @@ public class CommandWaypointUpdate extends OptionalPairServerCommand<String, Pos
     {
         ServerPlayerEntity player = source.getSource().getPlayer();
 
-        this.onOptionalCommand(source, s, player.getPos(), player.getServerWorld());
+        this.onOptionalCommand(source, s, player.getEntityPos(), player.getEntityWorld());
     }
 
     private void onOptionalCommand(CommandContext<ServerCommandSource> source, String s, Vec3d position,

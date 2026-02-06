@@ -23,7 +23,7 @@ public class SWPlayHandler implements PlayPayloadHandler<SWPayload>
     public void receive(SWPayload swPayload, ServerPlayNetworking.Context context)
     {
         ServerPlayerEntity player = context.player();
-        MinecraftServer server = player.getServer();
+        MinecraftServer server = context.server();
         PacketSender responseSender = context.responseSender();
 
         // can receive for the same player be called from multiple netty threads?

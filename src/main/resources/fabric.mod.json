@@ -22,9 +22,9 @@
     "sharedwaypoints-server-mod.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.16.9",
+    "fabricloader": ">=0.17.2",
     "fabric": "*",
-    "minecraft": "~1.21.4",
+    "minecraft": "~1.21.10",
     "java": ">=21"
   }
 }
