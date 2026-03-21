@@ -21,7 +21,7 @@ public class BlueMapManager implements WaypointsListener
 
     private static final String markerHTML = """
                                              <div class="bm-marker-player">
-                                                 <div class="bm-player-name">marker-label</div>
+                                                 <div class="bm-player-name" style="width: max-content;">marker-label</div>
                                              </div>
                                              """;
 
