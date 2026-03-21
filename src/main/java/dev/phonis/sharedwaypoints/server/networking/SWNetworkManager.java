@@ -42,9 +42,9 @@ public class SWNetworkManager
         return baos.toByteArray();
     }
 
-    public void sendToSubscribed(CommandContext<ServerCommandSource> source, SWAction action)
+    public void sendToSubscribed(SWAction action)
     {
-        this.sendToSubscribed(source.getSource().getServer().getPlayerManager(), action);
+        this.sendToSubscribed(SharedWaypointsServer.minecraftServer.getPlayerManager(), action);
     }
 
     // should be called from Server Thread

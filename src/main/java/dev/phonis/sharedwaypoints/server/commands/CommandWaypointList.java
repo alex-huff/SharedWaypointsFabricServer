@@ -27,7 +27,6 @@ public class CommandWaypointList extends NoArgServerCommand
         }
 
         StringBuilder messageBuilder = new StringBuilder();
-
         WaypointManager.INSTANCE.forEachWaypoint((waypoint, isLast) ->
         {
             messageBuilder.append(Formatting.AQUA).append(waypoint.getName()).append(Formatting.WHITE).append(" ➤ ")

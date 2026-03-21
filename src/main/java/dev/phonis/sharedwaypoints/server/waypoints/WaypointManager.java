@@ -5,9 +5,13 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.mojang.brigadier.context.CommandContext;
 import dev.phonis.sharedwaypoints.server.SharedWaypointsServer;
+import dev.phonis.sharedwaypoints.server.networking.SWNetworkManager;
+import dev.phonis.sharedwaypoints.server.networking.protocol.action.SWWaypointRemoveAction;
+import dev.phonis.sharedwaypoints.server.networking.protocol.action.SWWaypointUpdateAction;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -30,6 +34,12 @@ public class WaypointManager
     public static final String endIdentifier = "the_end";
 
     private final Map<String, Waypoint> waypointMap = new HashMap<>();
+    private final List<WaypointsListener> waypointsListeners = new ArrayList<>();
+
+    public void addWaypointsListeners(WaypointsListener waypointsListener)
+    {
+        this.waypointsListeners.add(waypointsListener);
+    }
 
     public void forEachWaypoint(Consumer<Waypoint> consumer)
     {
@@ -56,7 +66,16 @@ public class WaypointManager
     {
         Waypoint waypoint = this.waypointMap.remove(name);
 
-        this.trySave();
+        if (waypoint != null)
+        {
+            for (WaypointsListener waypointsListener : this.waypointsListeners)
+            {
+                waypointsListener.onWaypointRemove(waypoint);
+            }
+            SWNetworkManager.INSTANCE.sendToSubscribed(new SWWaypointRemoveAction(waypoint.getName()));
+
+            this.trySave();
+        }
 
         return waypoint;
     }
@@ -64,23 +83,53 @@ public class WaypointManager
     public Waypoint addWaypoint(CommandContext<ServerCommandSource> source, String name)
     {
         Vec3d position = source.getSource().getPosition();
-        Waypoint waypoint = new Waypoint(name, source.getSource().getWorld().getRegistryKey().getValue()
-            .getPath(), position.getX(), position.getY(), position.getZ());
+        World world = source.getSource().getWorld();
+        String worldString = world.getRegistryKey().getValue().getPath();
+        Waypoint waypoint = this.getWaypoint(name);
 
-        this.waypointMap.put(name, waypoint);
+        if (waypoint == null)
+        {
+            waypoint = new Waypoint(name, worldString, position.getX(), position.getY(), position.getZ());
+            this.waypointMap.put(name, waypoint);
+            for (WaypointsListener waypointsListener : this.waypointsListeners)
+            {
+                waypointsListener.onWaypointAdd(waypoint);
+            }
+        }
+        else
+        {
+            String oldWorldString = waypoint.getWorld();
+            waypoint.update(position, worldString);
+            for (WaypointsListener waypointsListener : this.waypointsListeners)
+            {
+                waypointsListener.onWaypointUpdate(waypoint, oldWorldString);
+            }
+        }
+        SWNetworkManager.INSTANCE.sendToSubscribed(new SWWaypointUpdateAction(waypoint));
+
         this.trySave();
 
         return waypoint;
     }
 
-    public Waypoint updateWaypoint(String s, Vec3d position, ServerWorld world)
+    public Waypoint updateWaypoint(String name, Vec3d position, ServerWorld world)
     {
-        Waypoint toUpdate = this.waypointMap.get(s);
+        Waypoint waypoint = this.waypointMap.get(name);
 
-        toUpdate.update(position, world.getRegistryKey().getValue().getPath());
-        this.trySave();
+        if (waypoint != null)
+        {
+            String oldWorldString = waypoint.getWorld();
+            waypoint.update(position, world.getRegistryKey().getValue().getPath());
+            for (WaypointsListener waypointsListener : this.waypointsListeners)
+            {
+                waypointsListener.onWaypointUpdate(waypoint, oldWorldString);
+            }
+            SWNetworkManager.INSTANCE.sendToSubscribed(new SWWaypointUpdateAction(waypoint));
 
-        return toUpdate;
+            this.trySave();
+        }
+
+        return waypoint;
     }
 
     public boolean hasWaypoint(String name)
