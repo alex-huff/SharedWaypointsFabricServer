@@ -62,7 +62,7 @@ public class DynmapManager implements WaypointsListener
         MarkerAPI markerAPI = DynmapManager.dynmapAPI.getMarkerAPI();
         MarkerSet waypoints
             = markerAPI.createMarkerSet(markerSetID, markerSetLabel, null, false);
-        waypoints.setHideByDefault(true);
+        waypoints.setHideByDefault(false);
         waypoints.setDefaultMarkerIcon(markerAPI.getMarkerIcon("blueflag"));
         WaypointManager.INSTANCE.forEachWaypoint((waypoint) -> DynmapManager.createMarkerFromWaypoint(waypoint, waypoints));
     }
