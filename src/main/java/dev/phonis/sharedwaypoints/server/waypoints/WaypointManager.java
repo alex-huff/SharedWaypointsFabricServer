@@ -34,7 +34,7 @@ public class WaypointManager
     public static final String endIdentifier = "the_end";
 
     private final Map<String, Waypoint> waypointMap = new HashMap<>();
-    private final List<WaypointsListener> waypointsListeners = new ArrayList<>();
+    private transient final List<WaypointsListener> waypointsListeners = new ArrayList<>();
 
     public void addWaypointsListeners(WaypointsListener waypointsListener)
     {
