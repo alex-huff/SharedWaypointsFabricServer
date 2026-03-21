@@ -57,9 +57,12 @@ public class BlueMapManager implements WaypointsListener
 
     public static void createWaypoints(BlueMapAPI api)
     {
-        MarkerSet waypointSetOverworld = MarkerSet.builder().label(BlueMapManager.getMarkerSetLabelFromWorldID(WaypointManager.overworldIdentifier)).build();
-        MarkerSet waypointSetNether = MarkerSet.builder().label(BlueMapManager.getMarkerSetLabelFromWorldID(WaypointManager.netherIdentifier)).build();
-        MarkerSet waypointSetEnd = MarkerSet.builder().label(BlueMapManager.getMarkerSetLabelFromWorldID(WaypointManager.endIdentifier)).build();
+        MarkerSet waypointSetOverworld = MarkerSet.builder().defaultHidden(false)
+            .label(BlueMapManager.getMarkerSetLabelFromWorldID(WaypointManager.overworldIdentifier)).build();
+        MarkerSet waypointSetNether = MarkerSet.builder().defaultHidden(false)
+            .label(BlueMapManager.getMarkerSetLabelFromWorldID(WaypointManager.netherIdentifier)).build();
+        MarkerSet waypointSetEnd = MarkerSet.builder().defaultHidden(false)
+            .label(BlueMapManager.getMarkerSetLabelFromWorldID(WaypointManager.endIdentifier)).build();
         WaypointManager.INSTANCE.forEachWaypoint((waypoint) ->
         {
             MarkerSet markerSet;
