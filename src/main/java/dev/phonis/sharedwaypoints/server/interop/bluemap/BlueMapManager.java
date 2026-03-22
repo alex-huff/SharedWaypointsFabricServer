@@ -10,7 +10,6 @@ import dev.phonis.sharedwaypoints.server.waypoints.Waypoint;
 import dev.phonis.sharedwaypoints.server.waypoints.WaypointManager;
 import dev.phonis.sharedwaypoints.server.waypoints.WaypointsListener;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import org.apache.commons.lang3.StringEscapeUtils;
 
 import java.util.Optional;
 
