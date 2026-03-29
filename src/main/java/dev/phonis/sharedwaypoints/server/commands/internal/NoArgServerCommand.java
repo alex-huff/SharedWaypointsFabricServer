@@ -4,10 +4,9 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import dev.phonis.sharedwaypoints.server.commands.argument.CommandArgument;
 import dev.phonis.sharedwaypoints.server.commands.exception.CommandException;
-import net.minecraft.server.command.ServerCommandSource;
-
 import java.util.LinkedList;
 import java.util.List;
+import net.minecraft.commands.CommandSourceStack;
 
 public abstract class NoArgServerCommand extends AbstractServerCommand
 {
@@ -26,12 +25,12 @@ public abstract class NoArgServerCommand extends AbstractServerCommand
     }
 
     @Override
-    public void onCommand(CommandContext<ServerCommandSource> source) throws CommandException, CommandSyntaxException
+    public void onCommand(CommandContext<CommandSourceStack> source) throws CommandException, CommandSyntaxException
     {
         this.onOptionalCommand(source);
     }
 
-    protected abstract void onOptionalCommand(CommandContext<ServerCommandSource> source)
+    protected abstract void onOptionalCommand(CommandContext<CommandSourceStack> source)
         throws CommandException, CommandSyntaxException;
 
 }

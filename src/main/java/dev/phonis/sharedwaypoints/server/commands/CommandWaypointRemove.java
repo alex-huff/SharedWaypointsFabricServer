@@ -7,8 +7,8 @@ import dev.phonis.sharedwaypoints.server.commands.internal.OptionalSingleServerC
 import dev.phonis.sharedwaypoints.server.commands.util.ContextUtil;
 import dev.phonis.sharedwaypoints.server.waypoints.Waypoint;
 import dev.phonis.sharedwaypoints.server.waypoints.WaypointManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandSourceStack;
 
 public class CommandWaypointRemove extends OptionalSingleServerCommand<String>
 {
@@ -20,13 +20,13 @@ public class CommandWaypointRemove extends OptionalSingleServerCommand<String>
     }
 
     @Override
-    protected void onOptionalCommand(CommandContext<ServerCommandSource> source) throws CommandException
+    protected void onOptionalCommand(CommandContext<CommandSourceStack> source) throws CommandException
     {
         throw new CommandException("You must provide a waypoint name.");
     }
 
     @Override
-    protected void onOptionalCommand(CommandContext<ServerCommandSource> source, String s) throws CommandException
+    protected void onOptionalCommand(CommandContext<CommandSourceStack> source, String s) throws CommandException
     {
         Waypoint waypoint = WaypointManager.INSTANCE.removeWaypoint(s);
 
@@ -36,7 +36,7 @@ public class CommandWaypointRemove extends OptionalSingleServerCommand<String>
         }
 
         ContextUtil.sendMessage(source,
-            Formatting.WHITE + "Waypoint '" + Formatting.AQUA + waypoint.getName() + Formatting.WHITE + "' removed.");
+            ChatFormatting.WHITE + "Waypoint '" + ChatFormatting.AQUA + waypoint.getName() + ChatFormatting.WHITE + "' removed.");
     }
 
 }

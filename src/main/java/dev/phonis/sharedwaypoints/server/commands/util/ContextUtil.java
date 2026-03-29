@@ -1,15 +1,15 @@
 package dev.phonis.sharedwaypoints.server.commands.util;
 
 import com.mojang.brigadier.context.CommandContext;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.Component;
 
 public class ContextUtil
 {
 
-    public static void sendMessage(CommandContext<ServerCommandSource> context, String message)
+    public static void sendMessage(CommandContext<CommandSourceStack> context, String message)
     {
-        context.getSource().sendMessage(Text.of(message));
+        context.getSource().sendSystemMessage(Component.nullToEmpty(message));
     }
 
 }

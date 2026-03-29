@@ -4,7 +4,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import dev.phonis.sharedwaypoints.server.commands.argument.CommandArgument;
 import dev.phonis.sharedwaypoints.server.commands.exception.CommandException;
-import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.commands.CommandSourceStack;
 
 public abstract class OptionalTripleServerCommand<A, B, C> extends OptionalPairServerCommand<A, B>
 {
@@ -21,12 +21,12 @@ public abstract class OptionalTripleServerCommand<A, B, C> extends OptionalPairS
         this.arguments.add(this.c);
     }
 
-    private void passArgs(CommandContext<ServerCommandSource> source) throws CommandException, CommandSyntaxException
+    private void passArgs(CommandContext<CommandSourceStack> source) throws CommandException, CommandSyntaxException
     {
         this.onOptionalCommand(source, (A) source.getArgument(this.a.name, Object.class), (B) source.getArgument(this.b.name, Object.class), (C) source.getArgument(this.c.name, Object.class));
     }
 
-    protected abstract void onOptionalCommand(CommandContext<ServerCommandSource> source, A a, B b, C c)
+    protected abstract void onOptionalCommand(CommandContext<CommandSourceStack> source, A a, B b, C c)
         throws CommandException, CommandSyntaxException;
 
 }

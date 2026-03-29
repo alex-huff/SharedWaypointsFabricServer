@@ -1,6 +1,6 @@
 package dev.phonis.sharedwaypoints.server.waypoints;
 
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.phys.Vec3;
 
 public class Waypoint
 {
@@ -45,7 +45,7 @@ public class Waypoint
         return this.zPos;
     }
 
-    public void update(Vec3d position, String world)
+    public void update(Vec3 position, String world)
     {
         this.xPos = position.x;
         this.yPos = position.y;

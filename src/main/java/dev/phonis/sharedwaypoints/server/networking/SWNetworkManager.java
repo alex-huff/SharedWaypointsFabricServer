@@ -11,9 +11,8 @@ import dev.phonis.sharedwaypoints.server.networking.protocol.v1.V1ProtocolAdapte
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.PlayerManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.players.PlayerList;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.ByteArrayOutputStream;
@@ -44,11 +43,11 @@ public class SWNetworkManager
 
     public void sendToSubscribed(SWAction action)
     {
-        this.sendToSubscribed(SharedWaypointsServer.minecraftServer.getPlayerManager(), action);
+        this.sendToSubscribed(SharedWaypointsServer.minecraftServer.getPlayerList(), action);
     }
 
     // should be called from Server Thread
-    public void sendToSubscribed(PlayerManager playerManager, SWAction action)
+    public void sendToSubscribed(PlayerList playerManager, SWAction action)
     {
         // although iteration over the hashmap does not guarantee that no modifications are made
         // during the iteration, the iterator should display that state of the map at the time
@@ -60,12 +59,12 @@ public class SWNetworkManager
     }
 
     // should be called from Server Thread
-    public void sendIfSubscribed(ServerPlayerEntity player, SWAction action)
+    public void sendIfSubscribed(ServerPlayer player, SWAction action)
     {
-        this.sendToPlayer(this.subscribedPlayers.get(player.getUuid()), player, action);
+        this.sendToPlayer(this.subscribedPlayers.get(player.getUUID()), player, action);
     }
 
-    private void sendToPlayer(ProtocolAdapter adapter, @Nullable ServerPlayerEntity player, SWAction action)
+    private void sendToPlayer(ProtocolAdapter adapter, @Nullable ServerPlayer player, SWAction action)
     {
         if (player == null || adapter == null)
         {
@@ -75,7 +74,7 @@ public class SWNetworkManager
         this.sendPacketToPlayer(player, adapter.fromAction(action));
     }
 
-    private void sendPacketToPlayer(ServerPlayerEntity player, SWPacket packet)
+    private void sendPacketToPlayer(ServerPlayer player, SWPacket packet)
     {
         try
         {
@@ -129,7 +128,7 @@ public class SWNetworkManager
         return false;
     }
 
-    public void subscribePlayer(MinecraftServer server, ServerPlayerEntity player, PacketSender responseSender,
+    public void subscribePlayer(MinecraftServer server, ServerPlayer player, PacketSender responseSender,
                                 int protocolVersion)
     {
         ProtocolAdapter adapter = switch (protocolVersion)
@@ -140,7 +139,7 @@ public class SWNetworkManager
 
         if (adapter != null)
         {
-            UUID uuid = player.getUuid();
+            UUID uuid = player.getUUID();
 
             this.subscribedPlayers.put(uuid, adapter);
 
@@ -170,7 +169,7 @@ public class SWNetworkManager
                 // not need to worry about the issues above.
                 // this would obviously require significant synchronization of the waypoint state for it to
                 // be safe
-                this.sendToPlayer(adapter, server.getPlayerManager().getPlayer(uuid), new SWWaypointInitializeAction());
+                this.sendToPlayer(adapter, server.getPlayerList().getPlayer(uuid), new SWWaypointInitializeAction());
             });
 
             // TLDR; currently it is feasible for the client to be told to remove or update a waypoint BEFORE

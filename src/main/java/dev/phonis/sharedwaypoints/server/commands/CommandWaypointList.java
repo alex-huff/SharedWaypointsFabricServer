@@ -4,8 +4,8 @@ import com.mojang.brigadier.context.CommandContext;
 import dev.phonis.sharedwaypoints.server.commands.internal.NoArgServerCommand;
 import dev.phonis.sharedwaypoints.server.commands.util.ContextUtil;
 import dev.phonis.sharedwaypoints.server.waypoints.WaypointManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandSourceStack;
 
 public class CommandWaypointList extends NoArgServerCommand
 {
@@ -17,11 +17,11 @@ public class CommandWaypointList extends NoArgServerCommand
     }
 
     @Override
-    protected void onOptionalCommand(CommandContext<ServerCommandSource> source)
+    protected void onOptionalCommand(CommandContext<CommandSourceStack> source)
     {
         if (WaypointManager.INSTANCE.numWaypoints() == 0)
         {
-            ContextUtil.sendMessage(source, Formatting.RED + "Currently there are no waypoints.");
+            ContextUtil.sendMessage(source, ChatFormatting.RED + "Currently there are no waypoints.");
 
             return;
         }
@@ -29,8 +29,8 @@ public class CommandWaypointList extends NoArgServerCommand
         StringBuilder messageBuilder = new StringBuilder();
         WaypointManager.INSTANCE.forEachWaypoint((waypoint, isLast) ->
         {
-            messageBuilder.append(Formatting.AQUA).append(waypoint.getName()).append(Formatting.WHITE).append(" ➤ ")
-                .append(Formatting.GRAY).append(waypoint.getWorld()).append(" ").append((int) waypoint.getX())
+            messageBuilder.append(ChatFormatting.AQUA).append(waypoint.getName()).append(ChatFormatting.WHITE).append(" ➤ ")
+                .append(ChatFormatting.GRAY).append(waypoint.getWorld()).append(" ").append((int) waypoint.getX())
                 .append(" ").append((int) waypoint.getY()).append(" ").append((int) waypoint.getZ());
             if (!isLast)
             {

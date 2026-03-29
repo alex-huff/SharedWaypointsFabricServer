@@ -7,10 +7,9 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import dev.phonis.sharedwaypoints.server.commands.argument.CommandArgument;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -30,11 +29,11 @@ public class SWCommandManager
         CommandRegistrationCallback.EVENT.register(SWCommandManager::registerCommands);
     }
 
-    public static void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher,
-                                        CommandRegistryAccess registryAccess,
-                                        CommandManager.RegistrationEnvironment env)
+    public static void registerCommands(CommandDispatcher<CommandSourceStack> dispatcher,
+                                        CommandBuildContext registryAccess,
+                                        Commands.CommandSelection env)
     {
-        if (env.dedicated)
+        if (env.includeDedicated)
         {
             for (IServerCommand command : SWCommandManager.commands)
             {
@@ -44,10 +43,10 @@ public class SWCommandManager
         }
     }
 
-    private static List<LiteralArgumentBuilder<ServerCommandSource>> buildCommand(IServerCommand command)
+    private static List<LiteralArgumentBuilder<CommandSourceStack>> buildCommand(IServerCommand command)
     {
-        LiteralArgumentBuilder<ServerCommandSource> rootCommand = LiteralArgumentBuilder.literal(command.getName());
-        List<LiteralArgumentBuilder<ServerCommandSource>> redirects = new LinkedList<>();
+        LiteralArgumentBuilder<CommandSourceStack> rootCommand = LiteralArgumentBuilder.literal(command.getName());
+        List<LiteralArgumentBuilder<CommandSourceStack>> redirects = new LinkedList<>();
 
         // recurse down the tree and link all nodes at next depth including aliases which have already been redirected
         for (IServerCommand subCommand : command.getSubCommands())
@@ -55,7 +54,7 @@ public class SWCommandManager
             SWCommandManager.buildCommand(subCommand).forEach(rootCommand::then);
         }
 
-        ArgumentBuilder<ServerCommandSource, ?> previous = null;
+        ArgumentBuilder<CommandSourceStack, ?> previous = null;
         List<CommandArgument<?>> arguments = command.getArguments();
 
         rootCommand.executes(command::execute);
@@ -65,7 +64,7 @@ public class SWCommandManager
         for (int i = arguments.size() - 1; i >= 0; i--)
         {
             CommandArgument<?> commandArgument = arguments.get(i);
-            RequiredArgumentBuilder<ServerCommandSource, ?> argumentBuilder
+            RequiredArgumentBuilder<CommandSourceStack, ?> argumentBuilder
                 = RequiredArgumentBuilder.argument(commandArgument.name, commandArgument.type);
 
             argumentBuilder.executes(commandArgument.getExecutor());
@@ -86,11 +85,11 @@ public class SWCommandManager
 
         redirects.add(rootCommand);
 
-        LiteralCommandNode<ServerCommandSource> commandNode = rootCommand.build();
+        LiteralCommandNode<CommandSourceStack> commandNode = rootCommand.build();
 
         for (String alias : command.getAliases())
         {
-            LiteralArgumentBuilder<ServerCommandSource> aliasCommand = LiteralArgumentBuilder.literal(alias);
+            LiteralArgumentBuilder<CommandSourceStack> aliasCommand = LiteralArgumentBuilder.literal(alias);
 
             // Seems as if redirect is only relevant in parsing down the tree, and not redirecting execution
             // That means all aliases need to also set their executor

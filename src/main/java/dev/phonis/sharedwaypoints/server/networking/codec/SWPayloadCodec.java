@@ -1,20 +1,20 @@
 package dev.phonis.sharedwaypoints.server.networking.codec;
 
 import dev.phonis.sharedwaypoints.server.networking.payload.SWPayload;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 
-public class SWPayloadCodec implements PacketCodec<RegistryByteBuf, SWPayload>
+public class SWPayloadCodec implements StreamCodec<RegistryFriendlyByteBuf, SWPayload>
 {
 
     @Override
-    public SWPayload decode(RegistryByteBuf buf)
+    public SWPayload decode(RegistryFriendlyByteBuf buf)
     {
         return new SWPayload(buf.readByteArray());
     }
 
     @Override
-    public void encode(RegistryByteBuf buf, SWPayload value)
+    public void encode(RegistryFriendlyByteBuf buf, SWPayload value)
     {
         buf.writeByteArray(value.bytes());
     }

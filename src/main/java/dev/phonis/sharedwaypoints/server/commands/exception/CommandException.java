@@ -1,12 +1,12 @@
 package dev.phonis.sharedwaypoints.server.commands.exception;
 
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
 
 public class CommandException extends Exception
 {
 
-    private static final String prefix = Formatting.RED + "Command usage error " + Formatting.GRAY + "➤ " +
-                                         Formatting.WHITE;
+    private static final String prefix = ChatFormatting.RED + "Command usage error " + ChatFormatting.GRAY + "➤ " +
+                                         ChatFormatting.WHITE;
 
     public CommandException(String error)
     {

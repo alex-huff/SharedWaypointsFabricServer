@@ -9,14 +9,14 @@ import dev.phonis.sharedwaypoints.server.commands.internal.OptionalPairServerCom
 import dev.phonis.sharedwaypoints.server.commands.util.ContextUtil;
 import dev.phonis.sharedwaypoints.server.waypoints.Waypoint;
 import dev.phonis.sharedwaypoints.server.waypoints.WaypointManager;
-import net.minecraft.command.argument.PosArgument;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.arguments.coordinates.Coordinates;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.phys.Vec3;
 
-public class CommandWaypointUpdate extends OptionalPairServerCommand<String, PosArgument>
+public class CommandWaypointUpdate extends OptionalPairServerCommand<String, Coordinates>
 {
 
     public CommandWaypointUpdate()
@@ -26,30 +26,30 @@ public class CommandWaypointUpdate extends OptionalPairServerCommand<String, Pos
     }
 
     @Override
-    protected void onOptionalCommand(CommandContext<ServerCommandSource> source) throws CommandException
+    protected void onOptionalCommand(CommandContext<CommandSourceStack> source) throws CommandException
     {
         throw new CommandException("You must provide a waypoint name.");
     }
 
     @Override
-    protected void onOptionalCommand(CommandContext<ServerCommandSource> source, String s, PosArgument posArgument)
+    protected void onOptionalCommand(CommandContext<CommandSourceStack> source, String s, Coordinates posArgument)
         throws CommandException, CommandSyntaxException
     {
-        this.onOptionalCommand(source, s, posArgument.getPos(source.getSource()), source.getSource().getPlayer()
-            .getEntityWorld());
+        this.onOptionalCommand(source, s, posArgument.getPosition(source.getSource()), source.getSource().getPlayer()
+            .level());
     }
 
     @Override
-    protected void onOptionalCommand(CommandContext<ServerCommandSource> source, String s)
+    protected void onOptionalCommand(CommandContext<CommandSourceStack> source, String s)
         throws CommandException, CommandSyntaxException
     {
-        ServerPlayerEntity player = source.getSource().getPlayer();
+        ServerPlayer player = source.getSource().getPlayer();
 
-        this.onOptionalCommand(source, s, player.getEntityPos(), player.getEntityWorld());
+        this.onOptionalCommand(source, s, player.position(), player.level());
     }
 
-    private void onOptionalCommand(CommandContext<ServerCommandSource> source, String s, Vec3d position,
-                                   ServerWorld world) throws CommandException
+    private void onOptionalCommand(CommandContext<CommandSourceStack> source, String s, Vec3 position,
+                                   ServerLevel world) throws CommandException
     {
         if (!WaypointManager.INSTANCE.hasWaypoint(s))
         {
@@ -59,8 +59,8 @@ public class CommandWaypointUpdate extends OptionalPairServerCommand<String, Pos
         Waypoint waypoint = WaypointManager.INSTANCE.updateWaypoint(s, position, world);
 
         ContextUtil.sendMessage(source,
-            Formatting.WHITE + "Position of '" + Formatting.AQUA + waypoint.getName() + Formatting.WHITE + "' ➤ " +
-            Formatting.AQUA + waypoint.getWorld() + Formatting.WHITE + " ➤ " + Formatting.GRAY + (int) waypoint.getX() +
+            ChatFormatting.WHITE + "Position of '" + ChatFormatting.AQUA + waypoint.getName() + ChatFormatting.WHITE + "' ➤ " +
+            ChatFormatting.AQUA + waypoint.getWorld() + ChatFormatting.WHITE + " ➤ " + ChatFormatting.GRAY + (int) waypoint.getX() +
             ", " + (int) waypoint.getY() + ", " + (int) waypoint.getZ());
     }
 

@@ -1,14 +1,14 @@
 package dev.phonis.sharedwaypoints.server.commands.argument;
 
-import net.minecraft.command.argument.BlockPosArgumentType;
-import net.minecraft.command.argument.PosArgument;
+import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
+import net.minecraft.commands.arguments.coordinates.Coordinates;
 
-public class PositionCommandArgument extends NoSuggestionCommandArgument<PosArgument>
+public class PositionCommandArgument extends NoSuggestionCommandArgument<Coordinates>
 {
 
     public PositionCommandArgument(String name)
     {
-        super(name, BlockPosArgumentType.blockPos());
+        super(name, BlockPosArgument.blockPos());
     }
 
 }

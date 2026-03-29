@@ -7,8 +7,8 @@ import dev.phonis.sharedwaypoints.server.commands.internal.OptionalSingleServerC
 import dev.phonis.sharedwaypoints.server.commands.util.ContextUtil;
 import dev.phonis.sharedwaypoints.server.waypoints.Waypoint;
 import dev.phonis.sharedwaypoints.server.waypoints.WaypointManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandSourceStack;
 
 public class CommandWaypointSet extends OptionalSingleServerCommand<String>
 {
@@ -20,19 +20,19 @@ public class CommandWaypointSet extends OptionalSingleServerCommand<String>
     }
 
     @Override
-    protected void onOptionalCommand(CommandContext<ServerCommandSource> source) throws CommandException
+    protected void onOptionalCommand(CommandContext<CommandSourceStack> source) throws CommandException
     {
         throw new CommandException("You must provide a waypoint name.");
     }
 
     @Override
-    protected void onOptionalCommand(CommandContext<ServerCommandSource> source, String s)
+    protected void onOptionalCommand(CommandContext<CommandSourceStack> source, String s)
     {
         Waypoint waypoint = WaypointManager.INSTANCE.addWaypoint(source, s);
 
         ContextUtil.sendMessage(source,
-            Formatting.WHITE + "Waypoint '" + Formatting.AQUA + waypoint.getName() + Formatting.WHITE + "' ➤ " +
-            Formatting.GRAY + waypoint.getWorld() + " " + Formatting.GRAY + (int) waypoint.getX() + " " +
+            ChatFormatting.WHITE + "Waypoint '" + ChatFormatting.AQUA + waypoint.getName() + ChatFormatting.WHITE + "' ➤ " +
+            ChatFormatting.GRAY + waypoint.getWorld() + " " + ChatFormatting.GRAY + (int) waypoint.getX() + " " +
             (int) waypoint.getY() + " " + (int) waypoint.getZ());
     }
 

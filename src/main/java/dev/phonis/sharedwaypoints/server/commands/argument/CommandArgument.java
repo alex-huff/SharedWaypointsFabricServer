@@ -3,14 +3,14 @@ package dev.phonis.sharedwaypoints.server.commands.argument;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
-import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.commands.CommandSourceStack;
 
-public abstract class CommandArgument<T> implements SuggestionProvider<ServerCommandSource>
+public abstract class CommandArgument<T> implements SuggestionProvider<CommandSourceStack>
 {
 
     public final String name;
     public final ArgumentType<T> type;
-    private Command<ServerCommandSource> executor; // set by command
+    private Command<CommandSourceStack> executor; // set by command
 
     public CommandArgument(String name, ArgumentType<T> type)
     {
@@ -18,14 +18,14 @@ public abstract class CommandArgument<T> implements SuggestionProvider<ServerCom
         this.type = type;
     }
 
-    public CommandArgument<T> setExecutor(Command<ServerCommandSource> executor)
+    public CommandArgument<T> setExecutor(Command<CommandSourceStack> executor)
     {
         this.executor = executor;
 
         return this;
     }
 
-    public Command<ServerCommandSource> getExecutor()
+    public Command<CommandSourceStack> getExecutor()
     {
         return this.executor;
     }

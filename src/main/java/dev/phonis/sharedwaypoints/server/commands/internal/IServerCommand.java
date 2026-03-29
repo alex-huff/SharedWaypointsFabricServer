@@ -2,11 +2,10 @@ package dev.phonis.sharedwaypoints.server.commands.internal;
 
 import com.mojang.brigadier.context.CommandContext;
 import dev.phonis.sharedwaypoints.server.commands.argument.CommandArgument;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.util.Formatting;
-
 import java.util.Collection;
 import java.util.List;
+import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandSourceStack;
 
 public interface IServerCommand
 {
@@ -19,7 +18,7 @@ public interface IServerCommand
 
     List<CommandArgument<?>> getArguments();
 
-    int execute(CommandContext<ServerCommandSource> source);
+    int execute(CommandContext<CommandSourceStack> source);
 
     default String getUsage()
     {
@@ -40,8 +39,8 @@ public interface IServerCommand
             message.append('\n').append("   ".repeat(depth));
         }
 
-        message.append(Formatting.RESET).append(Formatting.AQUA);
-        message.append(this.getName()).append(' ').append(Formatting.GRAY);
+        message.append(ChatFormatting.RESET).append(ChatFormatting.AQUA);
+        message.append(this.getName()).append(' ').append(ChatFormatting.GRAY);
         this.generateHint(message);
 
         for (IServerCommand subCommand : this.getSubCommands())

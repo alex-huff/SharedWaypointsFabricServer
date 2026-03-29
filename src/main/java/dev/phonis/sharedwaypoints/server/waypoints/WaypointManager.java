@@ -8,11 +8,6 @@ import dev.phonis.sharedwaypoints.server.SharedWaypointsServer;
 import dev.phonis.sharedwaypoints.server.networking.SWNetworkManager;
 import dev.phonis.sharedwaypoints.server.networking.protocol.action.SWWaypointRemoveAction;
 import dev.phonis.sharedwaypoints.server.networking.protocol.action.SWWaypointUpdateAction;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
-
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -21,6 +16,10 @@ import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 public class WaypointManager
 {
@@ -80,16 +79,16 @@ public class WaypointManager
         return waypoint;
     }
 
-    public Waypoint addWaypoint(CommandContext<ServerCommandSource> source, String name)
+    public Waypoint addWaypoint(CommandContext<CommandSourceStack> source, String name)
     {
-        Vec3d position = source.getSource().getPosition();
-        World world = source.getSource().getWorld();
-        String worldString = world.getRegistryKey().getValue().getPath();
+        Vec3 position = source.getSource().getPosition();
+        Level world = source.getSource().getLevel();
+        String worldString = world.dimension().location().getPath();
         Waypoint waypoint = this.getWaypoint(name);
 
         if (waypoint == null)
         {
-            waypoint = new Waypoint(name, worldString, position.getX(), position.getY(), position.getZ());
+            waypoint = new Waypoint(name, worldString, position.x(), position.y(), position.z());
             this.waypointMap.put(name, waypoint);
             for (WaypointsListener waypointsListener : this.waypointsListeners)
             {
@@ -112,14 +111,14 @@ public class WaypointManager
         return waypoint;
     }
 
-    public Waypoint updateWaypoint(String name, Vec3d position, ServerWorld world)
+    public Waypoint updateWaypoint(String name, Vec3 position, ServerLevel world)
     {
         Waypoint waypoint = this.waypointMap.get(name);
 
         if (waypoint != null)
         {
             String oldWorldString = waypoint.getWorld();
-            waypoint.update(position, world.getRegistryKey().getValue().getPath());
+            waypoint.update(position, world.dimension().location().getPath());
             for (WaypointsListener waypointsListener : this.waypointsListeners)
             {
                 waypointsListener.onWaypointUpdate(waypoint, oldWorldString);

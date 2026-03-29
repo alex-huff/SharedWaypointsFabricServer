@@ -5,12 +5,11 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import dev.phonis.sharedwaypoints.server.commands.exception.CommandException;
 import dev.phonis.sharedwaypoints.server.commands.util.ContextUtil;
-import net.minecraft.entity.Entity;
-import net.minecraft.server.command.ServerCommandSource;
-
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.world.entity.Entity;
 
 public abstract class AbstractServerCommand implements IServerCommand
 {
@@ -53,12 +52,12 @@ public abstract class AbstractServerCommand implements IServerCommand
     }
 
     @Override
-    public int execute(CommandContext<ServerCommandSource> source)
+    public int execute(CommandContext<CommandSourceStack> source)
     {
         return this.execute(source, this::onCommand);
     }
 
-    protected int execute(CommandContext<ServerCommandSource> source, CommandExecutor<ServerCommandSource> executor)
+    protected int execute(CommandContext<CommandSourceStack> source, CommandExecutor<CommandSourceStack> executor)
     {
         try
         {
@@ -77,7 +76,7 @@ public abstract class AbstractServerCommand implements IServerCommand
         return Command.SINGLE_SUCCESS;
     }
 
-    public abstract void onCommand(CommandContext<ServerCommandSource> source)
+    public abstract void onCommand(CommandContext<CommandSourceStack> source)
         throws CommandException, CommandSyntaxException;
 
 }

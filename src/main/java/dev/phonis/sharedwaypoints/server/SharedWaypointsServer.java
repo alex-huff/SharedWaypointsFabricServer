@@ -30,7 +30,7 @@ public class SharedWaypointsServer implements DedicatedServerModInitializer
         PayloadTypeRegistry.playC2S().register(SWPayload.id, SWPayload.codec);
         PayloadTypeRegistry.playS2C().register(SWPayload.id, SWPayload.codec);
         ServerPlayNetworking.registerGlobalReceiver(SWPayload.id, SWPlayHandler.INSTANCE);
-        ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> SWNetworkManager.INSTANCE.unsubscribePlayer(handler.player.getUuid()));
+        ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> SWNetworkManager.INSTANCE.unsubscribePlayer(handler.player.getUUID()));
         ServerLifecycleEvents.SERVER_STARTED.register((server) -> SharedWaypointsServer.minecraftServer = server);
         if (FabricLoader.getInstance().isModLoaded("dynmap"))
         {
