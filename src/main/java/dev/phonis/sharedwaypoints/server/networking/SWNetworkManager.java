@@ -1,6 +1,5 @@
 package dev.phonis.sharedwaypoints.server.networking;
 
-import com.mojang.brigadier.context.CommandContext;
 import dev.phonis.sharedwaypoints.server.SharedWaypointsServer;
 import dev.phonis.sharedwaypoints.server.networking.payload.SWPayload;
 import dev.phonis.sharedwaypoints.server.networking.protocol.action.SWAction;

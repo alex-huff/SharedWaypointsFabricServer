@@ -83,7 +83,7 @@ public class WaypointManager
     {
         Vec3 position = source.getSource().getPosition();
         Level world = source.getSource().getLevel();
-        String worldString = world.dimension().location().getPath();
+        String worldString = world.dimension().identifier().getPath();
         Waypoint waypoint = this.getWaypoint(name);
 
         if (waypoint == null)
@@ -118,7 +118,7 @@ public class WaypointManager
         if (waypoint != null)
         {
             String oldWorldString = waypoint.getWorld();
-            waypoint.update(position, world.dimension().location().getPath());
+            waypoint.update(position, world.dimension().identifier().getPath());
             for (WaypointsListener waypointsListener : this.waypointsListeners)
             {
                 waypointsListener.onWaypointUpdate(waypoint, oldWorldString);

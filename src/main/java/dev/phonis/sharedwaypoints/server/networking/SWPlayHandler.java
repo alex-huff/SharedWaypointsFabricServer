@@ -12,8 +12,6 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 
-import static net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.PlayPayloadHandler;
-
 public class SWPlayHandler implements PlayPayloadHandler<SWPayload>
 {
 
